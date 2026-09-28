@@ -10,18 +10,18 @@
       "currentActivity": "FALL_ABNORMAL_MOVEMENT",
       "activityConfidence": 96.3,
       "currentStatus": "CRITICAL",
-      "activityDurationSeconds": 569,
+      "activityDurationSeconds": 589,
       "lastActivity": "FALL_ABNORMAL_MOVEMENT",
       "vitals": {
-        "heartRate": 119,
+        "heartRate": 127,
         "spO2": 99,
         "bodyTemp": 36.8,
         "respiratoryRate": 15,
-        "metabolicKcalHour": 190
+        "metabolicKcalHour": 203
       },
       "stats": {
         "totalActiveSeconds": 21295,
-        "totalInactiveSeconds": 13172,
+        "totalInactiveSeconds": 13192,
         "exerciseSeconds": 4200,
         "workingSeconds": 14689,
         "eatingDrinkingSeconds": 2400,
@@ -1437,7 +1437,7 @@
       "missionName": "MISSION AURORA",
       "astronautId": "AST-01",
       "missionDay": 42,
-      "missionElapsedTimeSeconds": 32407,
+      "missionElapsedTimeSeconds": 32427,
       "startedAt": "2026-09-28T06:29:01.971Z",
       "commStatus": "ONLINE",
       "autonomousModeActive": false,

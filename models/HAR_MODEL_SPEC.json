@@ -1,0 +1,46 @@
+{
+  "model_name": "AstroSense-STGCN-Quantized",
+  "version": "1.4.0-edge",
+  "description": "Quantized Spatial-Temporal Graph Convolutional Network for Microgravity Human Activity Recognition",
+  "author": "AstroSense Mission Software Team",
+  "license": "Apache-2.0",
+  "target_frameworks": [
+    "ONNX Runtime 1.17+",
+    "TensorFlow Lite Micro",
+    "MediaPipe Pose Engine"
+  ],
+  "model_architecture": {
+    "backbone": "Spatial-Temporal Graph Convolution (ST-GCN)",
+    "temporal_modeling": "ConvLSTM + 1D Dilated Temporal Residual Blocks",
+    "input_tensor_shape": [1, 30, 17, 3],
+    "input_description": "Batch Size (1), Time Window (30 frames @ 30 FPS = 1.0s), Joints (17 COCO Keypoints), Coordinates (X, Y, Score)",
+    "output_tensor_shape": [1, 12],
+    "output_activation": "Softmax",
+    "quantization": "INT8 (PTQ - Post-Training Quantization with Symmetric Per-Channel Weight Clipping)",
+    "model_size_bytes": 4823400,
+    "model_size_mb": 4.6,
+    "inference_latency_target_ms": 24.5,
+    "target_power_budget_watts": 8.5
+  },
+  "classes": [
+    { "id": 0, "name": "WALKING", "category": "LOCOMOTION", "caloric_rate_kcal_hr": 180 },
+    { "id": 1, "name": "STANDING", "category": "STATIC", "caloric_rate_kcal_hr": 95 },
+    { "id": 2, "name": "SITTING", "category": "SEDENTARY", "caloric_rate_kcal_hr": 85 },
+    { "id": 3, "name": "SLEEPING_RESTING", "category": "REST", "caloric_rate_kcal_hr": 60 },
+    { "id": 4, "name": "EATING", "category": "METABOLIC", "caloric_rate_kcal_hr": 100 },
+    { "id": 5, "name": "DRINKING", "category": "METABOLIC", "caloric_rate_kcal_hr": 90 },
+    { "id": 6, "name": "EXERCISING", "category": "PHYSICAL_COUNTERMEASURE", "caloric_rate_kcal_hr": 450 },
+    { "id": 7, "name": "WORKING", "category": "MISSION_PAYLOAD", "caloric_rate_kcal_hr": 120 },
+    { "id": 8, "name": "OPERATING_EQUIPMENT", "category": "AVIONICS", "caloric_rate_kcal_hr": 140 },
+    { "id": 9, "name": "PICKING_CARRYING", "category": "CARGO_TRANSFER", "caloric_rate_kcal_hr": 210 },
+    { "id": 10, "name": "FALL_ABNORMAL_MOVEMENT", "category": "SAFETY_EVENT", "caloric_rate_kcal_hr": 250 },
+    { "id": 11, "name": "LONG_INACTIVITY", "category": "SAFETY_EVENT", "caloric_rate_kcal_hr": 65 }
+  ],
+  "validation_benchmarks": {
+    "top1_accuracy": 95.8,
+    "top3_accuracy": 99.1,
+    "f1_score_weighted": 0.954,
+    "fall_detection_sensitivity": 98.6,
+    "fall_detection_specificity": 99.4
+  }
+}

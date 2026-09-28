@@ -1,0 +1,112 @@
+[
+  {
+    "id": "KB-HAR-001",
+    "category": "HUMAN_ACTIVITY_RECOGNITION",
+    "keywords": ["har", "activity", "recognition", "posture", "ai", "edge", "motion", "skeleton", "classification", "camera", "vision"],
+    "title": "Onboard AI Human Activity Recognition (HAR) in Space",
+    "summary": "Real-time edge classification of astronaut biomechanical activities without cloud dependency.",
+    "content": "Onboard HAR leverages spatial-temporal neural networks (such as ST-GCN + ConvLSTM) running on radiation-tolerant edge hardware. By extracting 17 joint landmarks from cabin optical sensors, AstroSense classifies 12 distinct crew activities (Walking, Working, Exercising, Sleeping, Operating Equipment, etc.) locally within 24.5 ms, preserving astronaut visual privacy and operating continuously through ground communications blackouts.",
+    "source": "NASA Human Research Program & AstroSense Technical Specification",
+    "verified": true
+  },
+  {
+    "id": "KB-MIC-001",
+    "category": "MICROGRAVITY",
+    "keywords": ["microgravity", "weightlessness", "bone density", "muscle atrophy", "fluid shift", "exercise", "countermeasure"],
+    "title": "Microgravity Physiological Adaptations & Countermeasures",
+    "summary": "Biological effects of prolonged weightlessness and mandatory physical protocols.",
+    "content": "In microgravity, astronauts experience fluid headward shifts (causing facial puffiness and space motion sickness), cardiovascular deconditioning, and bone mineral density loss of approximately 1.0% to 1.5% per month in weight-bearing bones. To counteract this, flight rules mandate 2 hours of daily countermeasure training using resistive exercise devices (ARED) and cycle ergometers/treadmills (T2).",
+    "source": "ESA Life Sciences & NASA Human Research Program (HRP)",
+    "verified": true
+  },
+  {
+    "id": "KB-SAF-001",
+    "category": "ASTRONAUT_SAFETY",
+    "keywords": ["safety", "fall", "injury", "anomaly", "inactivity", "alert", "emergency", "crew safety", "medical"],
+    "title": "Astronaut Behavioral & Kinetic Safety Monitoring",
+    "summary": "Automated detection of sudden abnormal movements, kinetic collisions, and unresponsive holds.",
+    "content": "Autonomous monitoring uses rule-based heuristic bounds to detect sudden physical impacts, microgravity tumbles, or long periods of unexpected inactivity. When an anomaly is detected, the onboard system triggers immediate audio-visual alarms inside the habitat without waiting for round-trip Earth confirmation.",
+    "source": "NASA Behavioral Health and Performance (BHP) Standards",
+    "verified": true
+  },
+  {
+    "id": "KB-COM-001",
+    "category": "COMMUNICATION",
+    "keywords": ["communication", "blackout", "delay", "latency", "dtn", "bundle protocol", "dsn", "deep space network", "tdrs", "offline", "sync"],
+    "title": "Deep Space Communication Delays & Delay-Tolerant Networking (DTN)",
+    "summary": "Store-and-forward architecture for space environments with intermittent connectivity.",
+    "content": "Radio signals travel at light speed, introducing a 1.34-second one-way delay to the Moon and 3 to 22 minutes to Mars. Orbital occlusion and solar conjunctions cause multi-day blackouts. Delay-Tolerant Networking (DTN, RFC 5050 / CCSDS) uses store-and-forward bundle routing, allowing AstroSense to queue mission telemetry locally on edge flash storage and automatically synchronize once the RF carrier is re-acquired.",
+    "source": "CCSDS / Consultative Committee for Space Data Systems & IETF RFC 5050",
+    "verified": true
+  },
+  {
+    "id": "KB-SYS-001",
+    "category": "SPACECRAFT_SYSTEMS",
+    "keywords": ["eclss", "life support", "oxygen", "co2", "pressure", "temperature", "humidity", "power", "solar panels", "batteries"],
+    "title": "Environmental Control & Life Support Systems (ECLSS)",
+    "summary": "Spacecraft atmospheric revitalization, thermal management, and power distribution.",
+    "content": "ECLSS maintains cabin atmosphere at sea-level equivalent pressure (~101.3 kPa, 21% O2, 78% N2). CO2 scrubbers (CDRA / amine beds) keep CO2 below 500-1000 ppm to prevent crew headaches and cognitive decline. Solar arrays generate electrical power, storing excess energy in lithium-ion batteries during eclipse phases.",
+    "source": "NASA ISS ECLSS Technical Reference",
+    "verified": true
+  },
+  {
+    "id": "KB-ORB-001",
+    "category": "ORBIT",
+    "keywords": ["orbit", "altitude", "velocity", "leo", "inclination", "apogee", "perigee", "kepler", "ground track"],
+    "title": "Orbital Mechanics in Low Earth Orbit (LEO)",
+    "summary": "Orbital velocity, altitude balance, and ground track progression.",
+    "content": "Spacecraft in Low Earth Orbit (~400-420 km altitude) travel at approximately 7.67 km/s (27,600 km/h) to balance gravitational pull with centrifugal acceleration. At this speed, an orbital revolution takes approximately 92.8 minutes, meaning astronauts witness 16 sunrises and sunsets every 24-hour Earth day.",
+    "source": "NASA Orbital Mechanics for Engineers",
+    "verified": true
+  },
+  {
+    "id": "KB-AST-001",
+    "category": "ASTEROIDS",
+    "keywords": ["asteroid", "neo", "near earth object", "pha", "radar", "trajectory", "torino", "palermo", "deflection", "deep space"],
+    "title": "Near-Earth Object (NEO) & Asteroid Observation",
+    "summary": "Planetary defense tracking, orbital trajectory analysis, and hazard classification.",
+    "content": "Near-Earth Asteroids (NEOs) with perihelion distances ≤ 1.3 AU are cataloged and monitored by optical and planetary radar systems. Potentially Hazardous Asteroids (PHAs) come within 0.05 AU (19.5 Lunar Distances) of Earth's orbit and measure >140m across. Hazard levels are categorized on the 0-10 Torino Scale.",
+    "source": "NASA Center for Near-Earth Object Studies (CNEOS) / Planetary Defense",
+    "verified": true
+  },
+  {
+    "id": "KB-SPW-001",
+    "category": "SPACE_WEATHER",
+    "keywords": ["space weather", "solar flare", "cme", "radiation", "coronal mass ejection", "geomagnetic storm", "sunspots", "magnetosphere"],
+    "title": "Space Weather & Solar Particle Events (SPE)",
+    "summary": "Solar flares, coronal mass ejections, and astronaut radiation shielding.",
+    "content": "Solar flares and Coronal Mass Ejections (CMEs) eject high-energy protons and ionized plasma into the solar system. While Earth's magnetosphere deflects most particles in Low Earth Orbit, deep space missions require storm shelters with hydrogen-rich polyethylene shielding to mitigate radiation doses exceeding 20-50 mSv.",
+    "source": "NOAA Space Weather Prediction Center (SWPC) / NASA Space Radiation Lab",
+    "verified": true
+  },
+  {
+    "id": "KB-EOB-001",
+    "category": "EARTH_OBSERVATION",
+    "keywords": ["earth observation", "remote sensing", "multispectral", "synthetic aperture radar", "climate", "atmosphere", "land surface"],
+    "title": "Earth Remote Sensing from Spacecraft Platforms",
+    "summary": "Multispectral, hyperspectral, and Synthetic Aperture Radar (SAR) Earth monitoring.",
+    "content": "Spacecraft platforms observe Earth across optical, infrared, and microwave spectrums to measure atmospheric gases, ocean currents, surface vegetation indices (NDVI), and disaster zones. Spacecraft cupolas also provide direct visual surveillance for human-tended Earth photography experiments.",
+    "source": "ISRO Remote Sensing Applications Centre & ESA Copernicus Programme",
+    "verified": true
+  },
+  {
+    "id": "KB-MOP-001",
+    "category": "MISSION_OPERATIONS",
+    "keywords": ["mission operations", "flight plan", "timeline", "capcom", "flight director", "orbit schedule", "procedures"],
+    "title": "Space Flight Mission Operations & Flight Rule Governance",
+    "summary": "Daily crew scheduling, payload timelines, and human-in-the-loop oversight.",
+    "content": "Mission operations coordinate daily Orbital Daily Timelines (ODTs), allocating time blocks for sleep (8.5 hrs), meal prep (1.5 hrs), exercise (2 hrs), payload science (6.5 hrs), and station maintenance. Flight Rules specify go/no-go criteria and safety protocols.",
+    "source": "NASA Flight Operations Directorate (FOD)",
+    "verified": true
+  },
+  {
+    "id": "KB-EMG-001",
+    "category": "EMERGENCY_PROCEDURES",
+    "keywords": ["emergency", "depressurization", "toxic atmosphere", "fire", "evacuation", "emergency procedures", "contingency"],
+    "title": "Space Station Emergency Response Procedures",
+    "summary": "Standard response protocols for Cabin Fire, Rapid Depressurization, and Toxic Ammonia Spill.",
+    "content": "The 'Big Three' spaceflight emergency contingencies are Fire, Rapid Depressurization, and Toxic Atmospheric Contamination. In all cases, the primary protocol is: 1) Sound station alarm, 2) Don emergency breathing masks (O2/nitrogen canisters), 3) Locate and isolate module hatches, 4) Secure safe retreat path to return spacecraft (Soyuz/Dragon/Orion).",
+    "source": "ISS Emergency Operations Procedures Manual",
+    "verified": true
+  }
+]

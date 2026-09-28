@@ -1,0 +1,63 @@
+{
+  "mission": "MISSION AURORA",
+  "astronaut_id": "AST-01",
+  "flight_day": 42,
+  "timeline": [
+    {
+      "time": "09:00:00",
+      "activity": "WALKING",
+      "module": "LABORATORY",
+      "status": "NORMAL",
+      "comm": "ONLINE",
+      "details": "Routine transit from Crew Quarters to Science Module."
+    },
+    {
+      "time": "09:04:15",
+      "activity": "WORKING",
+      "module": "LABORATORY",
+      "status": "NORMAL",
+      "comm": "ONLINE",
+      "details": "Biological incubation experiment execution."
+    },
+    {
+      "time": "09:20:00",
+      "activity": "SITTING",
+      "module": "WORKSTATION",
+      "status": "NORMAL",
+      "comm": "ONLINE",
+      "details": "Telemetry review and science log entry."
+    },
+    {
+      "time": "09:40:00",
+      "activity": "EATING",
+      "module": "CREW_QUARTERS",
+      "status": "NORMAL",
+      "comm": "ONLINE",
+      "details": "Morning nutritional intake and fluid hydration."
+    },
+    {
+      "time": "10:00:00",
+      "activity": "EXERCISING",
+      "module": "EXERCISE_AREA",
+      "status": "NORMAL",
+      "comm": "OFFLINE",
+      "details": "Aerobic countermeasure cycle ergometer session."
+    },
+    {
+      "time": "10:20:00",
+      "activity": "WORKING",
+      "module": "LABORATORY",
+      "status": "NORMAL",
+      "comm": "OFFLINE",
+      "details": "Resuming glovebox specimen preparation."
+    },
+    {
+      "time": "10:40:00",
+      "activity": "FALL_ABNORMAL_MOVEMENT",
+      "module": "EXERCISE_AREA",
+      "status": "CRITICAL",
+      "comm": "OFFLINE",
+      "details": "Rapid kinetic displacement detected. Mission Safety Alert emitted."
+    }
+  ]
+}

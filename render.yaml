@@ -28,7 +28,7 @@ services:
         fromService:
           type: web
           name: astrosense-client
-          property: url
+          envVarKey: RENDER_EXTERNAL_URL
 
   - type: web
     name: astrosense-client
@@ -46,7 +46,7 @@ services:
         fromService:
           type: web
           name: astrosense-server
-          property: url
+          envVarKey: RENDER_EXTERNAL_URL
 
 databases:
   - name: astrosense-db

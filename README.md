@@ -64,8 +64,11 @@ ASTROSENSE resolves these challenges through an **edge-native, delay-tolerant so
 ## 4. Key Features
 
 - 🧠 **12-Class Biomechanical HAR**: Fine-motor, locomotion, exercise, and safety states.
+- 👁️ **Real-Time Browser Webcam HAR + OpenCV.js**: Live physical camera optical feed analyzing your body movements using `@mediapipe/tasks-vision` (33-joint skeleton) and client-side `OpenCV.js` WebAssembly frame preprocessing (blur variance, brightness, frame differencing, and Lucas-Kanade optical flow motion) with zero cloud video uploads and measured latency/FPS telemetry.
+- 🚀 **NASA & ISRO Verified Space Knowledge**: Fully offline factual knowledge base sourced from official `nasa.gov` (Gateway, HALO, Lunar I-Hab, Orion, Countermeasures) and `isro.gov.in` (Gaganyaan, Chandrayaan-3, Aditya-L1, Bharatiya Antariksh Station, Vyommitra) with source attributions and links.
+- 🌌 **Deep Space Mission Control UI**: Cosmic starfield, nebula gradients, orbital telemetry HUD, and animated spacecraft trajectory map (`OrbitalMap.tsx`).
 - 🖥️ **Unified Mission Monitor**: Aerospace dashboard combining multi-camera feeds, spacecraft telemetry, crew vitals, robots, and live events.
-- 🎥 **Live Multi-Camera Matrix**: 4 simulated habitat channels (`CAM-01` to `CAM-04`) with interactive canvas skeletal tracking, webcam mode, and video upload.
+- 🎥 **Dual-Mode Video Engine**: Seamless toggle between `REAL WEBCAM` (live on-device vision) and `SIMULATION` (synthetic microgravity telemetry for demo safety).
 - 🎙️ **Astrosense Voice Assistant**: Zero-cloud speech recognition (Web Speech API) and text fallback supporting 14+ mission queries.
 - 👨‍🚀 **Crew Routine & Circadian Manager**: Daily timetable tracking (Work, Meal, Exercise, Rest, Sleep) with acoustic announcements.
 - 🤖 **Autonomous Mission Robots**:
@@ -75,11 +78,59 @@ ASTROSENSE resolves these challenges through an **edge-native, delay-tolerant so
 - ☄️ **Deep Space Asteroid Monitor**: Real-time radar matrix tracking 4 near-Earth objects with delta-V anomaly detection.
 - 🚨 **Real-Time Anomaly Center**: Kinetic fall and inactivity detection with AI decision-support recommendations.
 - 📡 **Communication Blackout Simulator**: Interactive toggle between `ONLINE` and `OFFLINE` ground link states.
-- 💾 **Local ACID Event Vault**: Embedded resilient storage buffering events with microsecond UTC timestamps.
-- 🔄 **Delay-Tolerant Synchronization**: Multi-stage burst downlinking (0% → 100%) reconciling Earth databases.
+- 💾 **Local ACID Event Vault**: Embedded resilient SQLite storage buffering events with microsecond UTC timestamps.
+- 🔄 **Delay-Tolerant Synchronization**: Multi-stage burst downlinking (0% → 100%) reconciling Earth PostgreSQL ground databases.
 - 🌍 **Ground Mission Control Dashboard**: Dual-perspective view showing what Earth sees during blackout vs. nominal periods.
 - 📊 **Mission Audit & Report Export**: Instant CSV and JSON downloads of mission timelines.
-- 🎬 **Three Interactive Demo Runners**: Original 13-step Judge Demo, 14-step Extended Space Demo, and 16-step Advanced Monitoring Demo.
+- 🎬 **Four Interactive Demo Runners**: Original 13-step Judge Demo, 14-step Extended Space Demo, 16-step Advanced Monitoring Demo, and 17-Step Real Webcam + OpenCV.js Demo Lab.
+
+---
+
+## 4.1 Real Webcam Human Activity Recognition Pipeline
+
+ASTROSENSE integrates real browser webcam human activity recognition running 100% on-device:
+
+```
+REAL BROWSER WEBCAM
+        ↓ (getUserMedia API)
+HTMLVideoElement (<video> 1280x720)
+        ↓
+OPENCV.JS CLIENT PREPROCESSING (/js/opencv.js)
+  - Resolution Normalization (320x180 ROI)
+  - Grayscale Conversion (cv.cvtColor)
+  - Luminance & Contrast Diagnostics (cv.meanStdDev)
+  - Laplacian Blur Variance (cv.Laplacian)
+  - Frame Differencing & LK Optical Flow (cv.calcOpticalFlowPyrLK)
+        ↓
+ON-DEVICE POSE ESTIMATION (@mediapipe/tasks-vision PoseLandmarker)
+        ↓
+33 BODY LANDMARKS (Nose, Shoulders, Elbows, Wrists, Hips, Knees, Ankles)
+        ↓
+BIOMECHANICAL FEATURE EXTRACTION (Joint Angles, Torso Tilt, CoM, Velocities)
+        ↓
+TEMPORAL SLIDING BUFFER (45-Frame Rolling Window, Kinetic Energy, Periodicity)
+        ↓
+RULE-BASED HAR CLASSIFIER + ANTI-FLICKER HYSTERESIS (Majority Voting)
+        ↓
+DETECTED ACTIVITY + MEASURED CONFIDENCE + TRUTHFUL REASON
+        ↓
+PERSISTENCE TO LOCAL SQLITE VAULT (sync_status = 'PENDING' when offline)
+        ↓
+DELAY-TOLERANT SYNC TO POSTGRESQL (When ground comm is ONLINE)
+```
+
+### Supported Activities via Pose Landmarks & OpenCV Motion:
+- **STANDING**: Upright torso (< 26° tilt), straight knees (> 138°), low velocity, OpenCV optical flow motion < 0.05.
+- **SITTING**: Flexed knees (60°-135°), lowered center of mass, upright torso, stable seated posture.
+- **WALKING**: Upright torso, alternating leg stride dynamics, OpenCV optical flow motion > 0.07.
+- **EXERCISING**: High kinetic energy (> 0.30) with detected periodic cyclic oscillations (squats, arm movements) or aerobic motion surge (> 0.22).
+- **SLEEPING_RESTING**: Recumbent torso (> 60° tilt from vertical), low kinetic rest state (< 0.08).
+- **FALL_ABNORMAL_MOVEMENT**: Multi-stage fall detection: sudden downward drop velocity (> 0.5 norm/s) followed by orientation collapse (> 40° tilt delta) and persistent low ground state.
+- **LONG_INACTIVITY**: Zero kinetic translation detected exceeding the configurable threshold duration.
+- **CONSERVATIVE UNKNOWN / ANALYZING**: Object/context-dependent activities (`EATING`, `DRINKING`, `WORKING`, `OPERATING_EQUIPMENT`, `PICKING_CARRYING`) are NOT hallucinated from pose alone; they report `UNKNOWN` with `"Insufficient visual evidence - requires object/tool recognition"`.
+- **NO PERSON DETECTED**: Truthfully reported when no subject is in frame (0 landmarks).
+
+
 
 ---
 
@@ -414,11 +465,28 @@ npm run build
 
 ---
 
-## 25. API Overview
+## 25. Render Cloud Deployment (1-Click Blueprint)
+
+ASTROSENSE is 100% production-ready for deployment on **Render**:
+
+- **Blueprint File**: [`render.yaml`](render.yaml)
+- **Deployment Guide**: [`docs/DEPLOYMENT_RENDER.md`](docs/DEPLOYMENT_RENDER.md)
+- **Services Deployed**:
+  1. `astrosense-server` (Web Service on Node.js / Express / TypeScript)
+  2. `astrosense-client` (Static Site on React / Vite / OpenCV.js / MediaPipe)
+  3. `astrosense-db` (Managed PostgreSQL Ground Database)
+
+---
+
+## 26. API Overview
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| `GET` | `/api/health` | Node health & communication status |
+| `GET` | `/api/health` | Comprehensive node health, uptime, & DB status |
+| `GET` | `/api/astronaut` | Primary astronaut vitals & activity |
+| `GET` | `/api/crew` | Multi-crew telemetry & module locations |
+| `GET` | `/api/assistant/knowledge` | NASA & ISRO verified offline knowledge cards |
+| `POST`| `/api/assistant/chat` | AI space assistant query endpoint |
 | `GET` | `/api/robots` | States of ARES-1 & NOVA-2 robots |
 | `POST`| `/api/robots/:id/action` | Dispatch simulated robot commands |
 | `GET` | `/api/routine/schedules` | 4-crew circadian timetables |
@@ -428,6 +496,7 @@ npm run build
 | `GET` | `/api/telemetry/current` | 1Hz spacecraft telemetry |
 | `GET` | `/api/asteroids` | Radar tracking matrix for NEOs |
 | `POST`| `/api/sync/trigger` | Delay-tolerant batch downlinking |
+| `GET` | `/api/database/status` | Hybrid database connection & table metrics |
 | `GET` | `/api/simulation/demo/status`| 13-step Judge Demo status |
 | `GET` | `/api/simulation/advanced-demo/status` | 16-step Advanced Demo status |
 
@@ -435,11 +504,20 @@ npm run build
 
 ---
 
-## 26. Testing
+## 27. Automated Testing & Verification
 
-Verify the complete backend and frontend build:
+Run the complete automated test suites:
 
 ```bash
+# Production & Render Deployment Test Suite (26/26 tests)
+npx --prefix server tsx src/test_production_deployment.ts
+
+# Real Webcam HAR & Computer Vision Test Suite (27/27 tests)
+npx --prefix server tsx src/test_vision_har.ts
+
+# Hybrid Database & Sync Integration Test Suite (40/40 tests)
+npx --prefix server tsx src/test_database_integration.ts
+
 # Compile Server TypeScript
 npm --prefix server run build
 

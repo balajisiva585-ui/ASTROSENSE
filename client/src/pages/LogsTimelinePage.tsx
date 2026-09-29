@@ -13,6 +13,7 @@ import {
   Radio,
 } from 'lucide-react';
 import { ActivityType, SyncStatus, MissionEvent } from '../types';
+import { api } from '../services/api';
 
 export const LogsTimelinePage: React.FC = () => {
   const { events, session } = useMission();
@@ -36,11 +37,11 @@ export const LogsTimelinePage: React.FC = () => {
   });
 
   const handleDownloadCsv = () => {
-    window.open('/api/export/events.csv', '_blank');
+    window.open(api.getExportCsvUrl(), '_blank');
   };
 
   const handleDownloadJson = () => {
-    window.open('/api/export/report.json', '_blank');
+    window.open(api.getExportJsonUrl(), '_blank');
   };
 
   return (

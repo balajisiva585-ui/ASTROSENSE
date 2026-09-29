@@ -10,6 +10,7 @@ import {
   ActivityType,
   HabitatModule,
 } from '../types';
+import { sqliteService } from './sqliteDb';
 
 interface DatabaseSchema {
   astronauts: Record<string, Astronaut>;
@@ -105,13 +106,15 @@ const INITIAL_SESSION: MissionSession = {
 
 class LocalDatabase {
   private data: DatabaseSchema;
-  private isWriting: boolean = false;
 
   constructor() {
     this.ensureDataDirectory();
     this.data = this.loadDatabase();
     if (!this.data.astronauts['AST-01']) {
       this.seedInitialData();
+    } else {
+      // Sync initial records to SQLite
+      this.syncAllToSqlite();
     }
   }
 
@@ -148,6 +151,24 @@ class LocalDatabase {
       fs.renameSync(tempPath, DB_FILE);
     } catch (err) {
       console.error('Failed to persist database:', err);
+    }
+  }
+
+  private syncAllToSqlite(): void {
+    try {
+      for (const evt of this.data.mission_events) {
+        sqliteService.persistEvent(evt);
+      }
+      for (const anom of this.data.anomalies) {
+        sqliteService.persistAnomaly(anom);
+      }
+      if (this.data.robot_events) {
+        for (const rEvt of this.data.robot_events) {
+          sqliteService.persistRobotEvent(rEvt);
+        }
+      }
+    } catch (err) {
+      console.warn('[LocalDatabase syncAllToSqlite Warning]:', err);
     }
   }
 
@@ -262,6 +283,7 @@ class LocalDatabase {
     this.data.mission_sessions['SESSION-AURORA-042'].unsyncedEventCount = 0;
 
     this.persist();
+    this.syncAllToSqlite();
   }
 
   // Astronaut methods
@@ -342,11 +364,30 @@ class LocalDatabase {
     return events;
   }
 
-  public addEvent(event: Omit<MissionEvent, 'id'> & { id?: string }): MissionEvent {
+  public addEvent(event: Partial<MissionEvent>): MissionEvent {
     const eventId = event.id || `EVT-${Date.now().toString(36).toUpperCase()}-${Math.floor(Math.random() * 1000)}`;
+    const session = this.getSession();
+    const now = new Date();
+    const timestamp = event.timestamp || now.toISOString();
+    const displayTime = event.displayTime || now.toTimeString().split(' ')[0];
+    const syncStatus: SyncStatus = event.syncStatus || (session.commStatus === 'OFFLINE' ? 'PENDING' : 'SYNCED');
+
     const newEvent: MissionEvent = {
-      ...event,
       id: eventId,
+      astronautId: event.astronautId || 'AST-01',
+      timestamp,
+      displayTime,
+      activity: event.activity || 'STANDING',
+      confidence: typeof event.confidence === 'number' ? event.confidence : 95.0,
+      durationSeconds: typeof event.durationSeconds === 'number' ? event.durationSeconds : 0,
+      severity: event.severity || 'INFO',
+      module: event.module || 'LABORATORY',
+      syncStatus,
+      source: event.source || 'ONBOARD_EDGE_AI',
+      processingMode: event.processingMode || 'ONBOARD_EDGE_AI',
+      details: event.details || '',
+      syncedAt: syncStatus === 'SYNCED' ? timestamp : undefined,
+      recommendedAction: event.recommendedAction,
     };
 
     this.data.mission_events.unshift(newEvent);
@@ -359,17 +400,23 @@ class LocalDatabase {
         entityType: 'EVENT',
         payload: newEvent,
         queuedAt: newEvent.timestamp,
-        status: 'PENDING',
+        status: newEvent.syncStatus,
       });
     }
 
+    // Persist to native SQLite
+    sqliteService.persistEvent(newEvent);
+
     // Update session unsynced count
-    const session = this.getSession();
     session.totalEventsCount = this.data.mission_events.length;
-    session.unsyncedEventCount = this.data.mission_events.filter(e => e.syncStatus === 'PENDING').length;
+    session.unsyncedEventCount = this.getUnsyncedEventsCount();
 
     this.persist();
     return newEvent;
+  }
+
+  public getUnsyncedEventsCount(): number {
+    return this.data.mission_events.filter(e => e.syncStatus === 'PENDING').length;
   }
 
   // Anomalies methods
@@ -408,6 +455,9 @@ class LocalDatabase {
       });
     }
 
+    // Persist to native SQLite
+    sqliteService.persistAnomaly(newAnomaly);
+
     // Update astronaut stats
     const astro = this.getAstronaut(newAnomaly.astronautId);
     this.updateAstronaut(astro.id, {
@@ -426,6 +476,8 @@ class LocalDatabase {
     const anomaly = this.data.anomalies.find(a => a.id === id);
     if (anomaly) {
       anomaly.resolved = true;
+      sqliteService.persistAnomaly(anomaly);
+
       const astro = this.getAstronaut(anomaly.astronautId);
       const remainingActive = this.data.anomalies.filter(a => !a.resolved && a.astronautId === astro.id);
       if (remainingActive.length === 0) {
@@ -493,14 +545,19 @@ class LocalDatabase {
       }
     }
 
+    // Persist sync state to SQLite
+    sqliteService.markSynced(eventIds);
+
     // Record sync history
-    this.data.sync_history.unshift({
+    const syncHistEntry = {
       id: `SYNC-${Date.now()}`,
       timestamp: nowIso,
       batchSize: count,
       durationMs: 400 + Math.floor(Math.random() * 300),
-      status: 'SUCCESS',
-    });
+      status: 'SUCCESS' as const,
+    };
+    this.data.sync_history.unshift(syncHistEntry);
+    sqliteService.recordSyncHistory(syncHistEntry);
 
     const session = this.getSession();
     session.unsyncedEventCount = this.data.mission_events.filter(e => e.syncStatus === 'PENDING').length;
@@ -514,6 +571,7 @@ class LocalDatabase {
   public addRobotEvent(evt: any): any {
     if (!this.data.robot_events) this.data.robot_events = [];
     this.data.robot_events.unshift(evt);
+    sqliteService.persistRobotEvent(evt);
     this.persist();
     return evt;
   }

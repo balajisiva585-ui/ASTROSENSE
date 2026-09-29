@@ -19,6 +19,7 @@ import {
   CrewRoutineTask,
   RoutineAnnouncement,
   CameraFeedState,
+  DatabaseStatusData,
 } from '../types';
 import { api } from '../services/api';
 import { sounds } from '../utils/sounds';
@@ -124,11 +125,22 @@ interface MissionContextType {
   openAdvancedDemo: () => void;
   closeAdvancedDemo: () => void;
 
+  // Real Webcam + OpenCV 17-Step Demo
+  isRealWebcamDemoOpen: boolean;
+  openRealWebcamDemo: () => void;
+  closeRealWebcamDemo: () => void;
+
   // Assistant Chat
   toggleAssistant: () => void;
   openAssistant: () => void;
   closeAssistant: () => void;
   sendAssistantMessage: (text: string) => Promise<void>;
+
+  // Hybrid Database Management (SQLite + PostgreSQL)
+  databaseStatus: DatabaseStatusData | null;
+  isDatabaseConfigured: boolean;
+  refreshDatabaseStatus: () => Promise<void>;
+  triggerDatabaseSync: () => Promise<void>;
 
   openReportModal: () => void;
   closeReportModal: () => void;
@@ -183,11 +195,15 @@ export const MissionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [videoFeeds, setVideoFeeds] = useState<CameraFeedState[]>([]);
   const [activeCamId, setActiveCamId] = useState<string>('CAM-01');
 
+  // Hybrid Database State
+  const [databaseStatus, setDatabaseStatus] = useState<DatabaseStatusData | null>(null);
+
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [inputMode, setInputMode] = useState<'SIMULATION' | 'CAMERA' | 'VIDEO'>('SIMULATION');
   const [isJudgeDemoOpen, setIsJudgeDemoOpen] = useState<boolean>(false);
   const [isExtendedDemoOpen, setIsExtendedDemoOpen] = useState<boolean>(false);
   const [isAdvancedDemoOpen, setIsAdvancedDemoOpen] = useState<boolean>(false);
+  const [isRealWebcamDemoOpen, setIsRealWebcamDemoOpen] = useState<boolean>(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(true);
@@ -195,6 +211,26 @@ export const MissionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const prevCommStatusRef = React.useRef<CommStatus | null>(null);
   const prevAnomalyCountRef = React.useRef<number>(0);
+
+  const refreshDatabaseStatus = useCallback(async () => {
+    try {
+      const dbStatus = await api.getDatabaseStatus();
+      setDatabaseStatus(dbStatus);
+    } catch (err: any) {
+      console.warn('[MissionContext] Failed to refresh database status:', err);
+    }
+  }, []);
+
+  const triggerDatabaseSync = useCallback(async () => {
+    try {
+      await api.triggerDatabaseSync();
+      await refreshDatabaseStatus();
+      await refreshAll();
+    } catch (err: any) {
+      console.error('[MissionContext] Database sync failed:', err);
+      throw err;
+    }
+  }, [refreshDatabaseStatus]);
 
   const refreshAll = useCallback(async () => {
     try {
@@ -217,6 +253,7 @@ export const MissionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         routineSchedulesData,
         announcementsData,
         videoFeedsData,
+        dbStatusData,
       ] = await Promise.all([
         api.getAstronaut(),
         api.getSession(),
@@ -236,6 +273,7 @@ export const MissionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         api.getCrewSchedules(),
         api.getAnnouncements(),
         api.getVideoFeeds(),
+        api.getDatabaseStatus().catch(() => null),
       ]);
 
       setAstronaut(astroData);
@@ -256,6 +294,9 @@ export const MissionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       setCrewSchedules(routineSchedulesData);
       setAnnouncements(announcementsData);
       setVideoFeeds(videoFeedsData);
+      if (dbStatusData) {
+        setDatabaseStatus(dbStatusData);
+      }
 
       // Trigger audio on state transitions
       if (prevCommStatusRef.current && prevCommStatusRef.current !== sessionData.commStatus) {
@@ -656,6 +697,9 @@ export const MissionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         stepAdvancedDemo,
         openAdvancedDemo: () => setIsAdvancedDemoOpen(true),
         closeAdvancedDemo: () => setIsAdvancedDemoOpen(false),
+        isRealWebcamDemoOpen,
+        openRealWebcamDemo: () => setIsRealWebcamDemoOpen(true),
+        closeRealWebcamDemo: () => setIsRealWebcamDemoOpen(false),
         toggleAssistant: () => setIsAssistantOpen(prev => !prev),
         openAssistant: () => setIsAssistantOpen(true),
         closeAssistant: () => setIsAssistantOpen(false),
@@ -664,6 +708,10 @@ export const MissionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         closeReportModal: () => setIsReportModalOpen(false),
         toggleSound,
         refreshAll,
+        databaseStatus,
+        isDatabaseConfigured: databaseStatus?.databaseConfigured ?? false,
+        refreshDatabaseStatus,
+        triggerDatabaseSync,
       }}
     >
       {children}

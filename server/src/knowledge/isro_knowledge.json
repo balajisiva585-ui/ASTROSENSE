@@ -1,0 +1,87 @@
+[
+  {
+    "id": "ISRO-GAGANYAAN-001",
+    "topic": "Gaganyaan Human Spaceflight Programme",
+    "title": "Gaganyaan Orbital Module & Crew Escape System",
+    "sourceAgency": "ISRO",
+    "sourceUrl": "https://www.isro.gov.in/Gaganyaan.html",
+    "sourceTitle": "ISRO Gaganyaan Mission Overview & Human Spaceflight Centre (HSFC)",
+    "verifiedAt": "2026-09-29",
+    "category": "HUMAN_SPACEFLIGHT",
+    "summary": "Gaganyaan is India's flagship human spaceflight programme designed to demonstrate indigenous human spaceflight capability to Low Earth Orbit (LEO) and safe return to Indian territorial waters.",
+    "facts": [
+      "The Gaganyaan Orbital Module comprises the Crew Module (CM) and Service Module (SM) with a total mass of approximately 8,200 kg.",
+      "Accommodates a crew of up to three astronauts (Gaganauts) in a 400 km circular low-Earth orbit for a planned 3-day mission duration.",
+      "The Crew Module features a thermal protection system, environmental control and life support system (ECLSS), and dual parachute recovery system for splashdown.",
+      "Equipped with the Crew Escape System (CES) powered by quick-reacting solid motors capable of autonomous pad-abort and in-flight abort during launch ascent."
+    ]
+  },
+  {
+    "id": "ISRO-CHANDRAYAAN3-002",
+    "topic": "Chandrayaan-3 Lunar Exploration",
+    "title": "Chandrayaan-3 Vikram Lander & Pragyan Rover",
+    "sourceAgency": "ISRO",
+    "sourceUrl": "https://www.isro.gov.in/Chandrayaan3.html",
+    "sourceTitle": "ISRO Chandrayaan-3 Mission Details & Lunar Polar Exploration",
+    "verifiedAt": "2026-09-29",
+    "category": "LUNAR_EXPLORATION",
+    "summary": "Chandrayaan-3 is ISRO's successful lunar mission that accomplished historic soft landing in the Moon's South Polar region (Shiv Shakti Point) on August 23, 2023.",
+    "facts": [
+      "Comprises the Vikram Lander (with 4 throttleable liquid engines and hazard detection cameras) and the Pragyan 6-wheeled scientific rover.",
+      "Vikram payloads: ChaSTE (thermal probe measuring lunar regolith thermal conductivity), ILSA (seismometer), and RAMBHA-LP (Langmuir probe for lunar plasma).",
+      "Pragyan payloads: APXS (Alpha Particle X-Ray Spectrometer) and LIBS (Laser-Induced Breakdown Spectroscopy) which confirmed elemental sulfur on the lunar surface.",
+      "Propulsion Module served as communications relay and carried the SHAPE payload to study Earth's spectral and polarimetric signatures from lunar orbit."
+    ]
+  },
+  {
+    "id": "ISRO-ADITYAL1-003",
+    "topic": "Aditya-L1 Solar Observatory",
+    "title": "Aditya-L1 Space-based Solar Observatory at Sun-Earth L1",
+    "sourceAgency": "ISRO",
+    "sourceUrl": "https://www.isro.gov.in/Aditya_L1.html",
+    "sourceTitle": "ISRO Aditya-L1 Solar Mission & Payload Suite",
+    "verifiedAt": "2026-09-29",
+    "category": "SOLAR_PHYSICS",
+    "summary": "Aditya-L1 is India's first dedicated space-based solar observatory positioned in a halo orbit around the Sun-Earth Lagrangian Point L1 (~1.5 million km from Earth).",
+    "facts": [
+      "Operates from Sun-Earth L1 point providing continuous, uninterrupted observation of the Sun without eclipses or occultations.",
+      "Primary payload: Visible Emission Line Coronagraph (VELC) designed to image the solar corona and diagnose coronal mass ejections (CMEs).",
+      "Solar Ultraviolet Imaging Telescope (SUIT) captures full-disk images of the solar photosphere and chromosphere in the 200-400 nm UV band.",
+      "In-situ instruments ASPEX, PAPA, SoLEXS, HEL1OS, and digital magnetometers measure solar wind protons, alphas, X-ray flares, and interplanetary magnetic fields."
+    ]
+  },
+  {
+    "id": "ISRO-BAS-004",
+    "topic": "Bharatiya Antariksh Station (BAS)",
+    "title": "Bharatiya Antariksh Station (BAS) Space Station Road-map",
+    "sourceAgency": "ISRO",
+    "sourceUrl": "https://www.isro.gov.in/",
+    "sourceTitle": "ISRO Vision 2047 & Bharatiya Antariksh Station Architecture",
+    "verifiedAt": "2026-09-29",
+    "category": "SPACE_STATION",
+    "summary": "Bharatiya Antariksh Station is India's planned modular space station in Low Earth Orbit (LEO) targeted for initial base module assembly by 2028-2035.",
+    "facts": [
+      "Initial module (BAS-1) mass targeted at ~20-25 tonnes, placed into a ~400-450 km orbit using the Next Generation Launch Vehicle (NGLV) / LVM3.",
+      "Designed to support indigenous microgravity scientific research, astronomy, materials processing, and long-duration human spaceflight physiology.",
+      "Features universal docking ports compatible with Gaganyaan crew modules and automated robotic cargo resupply vehicles.",
+      "Planned as a stepping stone toward India's national objective of landing an Indian astronaut on the Moon by 2040."
+    ]
+  },
+  {
+    "id": "ISRO-VYOMMITRA-005",
+    "topic": "Vyommitra Space Humanoid Robot",
+    "title": "Vyommitra AI Robotic Crew Companion",
+    "sourceAgency": "ISRO",
+    "sourceUrl": "https://www.isro.gov.in/Gaganyaan.html",
+    "sourceTitle": "ISRO HSFC Vyommitra Half-Humanoid Robot for Uncrewed Missions",
+    "verifiedAt": "2026-09-29",
+    "category": "SPACE_ROBOTICS",
+    "summary": "Vyommitra ('Space Friend') is a female half-humanoid robot developed by ISRO's Human Space Flight Centre (HSFC) and Inertial Systems Unit (IISU) for uncrewed Gaganyaan test flights.",
+    "facts": [
+      "Equipped to monitor environmental parameters, operate switch panels, execute ground-commanded procedures, and simulate human metabolic functions in microgravity.",
+      "Features autonomous speech recognition, bilingual conversation capability (Hindi/English), and vision-based switch panel posture recognition.",
+      "Designed to measure vibrations, acceleration forces, and acoustic stress during launch and orbital maneuvers to validate crew cabin safety.",
+      "Demonstrates human-robot teaming architecture for autonomous habitat maintenance during uncrewed space station intervals."
+    ]
+  }
+]

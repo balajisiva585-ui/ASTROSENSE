@@ -243,6 +243,7 @@ export interface AsteroidObject {
 
 export interface SpaceKnowledgeItem {
   id: string;
+  topic?: string;
   category:
     | 'SPACE_BASICS'
     | 'MICROGRAVITY'
@@ -257,13 +258,37 @@ export interface SpaceKnowledgeItem {
     | 'EARTH_OBSERVATION'
     | 'MISSION_OPERATIONS'
     | 'HUMAN_ACTIVITY_RECOGNITION'
-    | 'EMERGENCY_PROCEDURES';
-  keywords: string[];
+    | 'EMERGENCY_PROCEDURES'
+    | 'HABITATION_STATION'
+    | 'HABITATION_MODULE'
+    | 'SPACECRAFT'
+    | 'CREW_HEALTH'
+    | 'HUMAN_SPACEFLIGHT'
+    | 'LUNAR_EXPLORATION'
+    | 'SOLAR_PHYSICS'
+    | 'SPACE_STATION'
+    | 'SPACE_ROBOTICS';
+  keywords?: string[];
   title: string;
   summary: string;
-  content: string;
-  source: string;
-  verified: boolean;
+  content?: string;
+  facts?: string[];
+  source?: string;
+  sourceAgency?: 'NASA' | 'ISRO' | 'ESA' | 'JAXA' | 'ASTROSENSE';
+  sourceTitle?: string;
+  sourceUrl?: string;
+  verifiedAt?: string;
+  verified?: boolean;
+}
+
+export interface ChatMessageSource {
+  title: string;
+  category: string;
+  type: 'VERIFIED_KNOWLEDGE' | 'SIMULATED_TELEMETRY' | 'AI_RECOMMENDATION' | 'SIMULATED_ROBOT' | 'SIMULATED_SCHEDULE';
+  sourceAgency?: 'NASA' | 'ISRO' | 'ESA' | 'JAXA' | 'ASTROSENSE';
+  sourceTitle?: string;
+  sourceUrl?: string;
+  verifiedAt?: string;
 }
 
 export interface ChatMessage {
@@ -272,11 +297,7 @@ export interface ChatMessage {
   text: string;
   timestamp: string;
   category?: string;
-  sources?: Array<{
-    title: string;
-    category: string;
-    type: 'VERIFIED_KNOWLEDGE' | 'SIMULATED_TELEMETRY' | 'AI_RECOMMENDATION' | 'SIMULATED_ROBOT' | 'SIMULATED_SCHEDULE';
-  }>;
+  sources?: ChatMessageSource[];
   recommendedAction?: string;
   isDecisionSupport?: boolean;
 }
@@ -407,3 +428,167 @@ export interface AdvancedDemoStep {
   crewActivity: string;
   notes: string;
 }
+
+// === HYBRID DATABASE ARCHITECTURE TYPES ===
+
+export interface DatabaseStatusData {
+  databaseConfigured: boolean;
+  sqlite: {
+    status: 'ONLINE' | 'ERROR';
+    mode: string;
+    path: string;
+    tablesCount: number;
+    totalRecordsCount: number;
+    lastChecked: string;
+    tableCounts: Record<string, number>;
+  };
+  postgres: {
+    status: 'ONLINE' | 'OFFLINE' | 'CONNECTING' | 'ERROR' | 'UNCONFIGURED';
+    configured: boolean;
+    provider: string;
+    host: string;
+    database: string;
+    user: string;
+    port: number;
+    ssl: boolean;
+    latencyMs: number;
+    tablesReady: boolean;
+    tableCounts: Record<string, number>;
+    lastChecked: string;
+    errorMessage?: string;
+  };
+  syncEngine: {
+    commStatus: CommStatus;
+    isSyncing: boolean;
+    syncProgress: number;
+    pendingEventsCount: number;
+    pendingAnomaliesCount: number;
+    totalPendingItems: number;
+    engineStatus: 'IDLE' | 'SYNCING' | 'COMPLETED' | 'ERROR' | 'PAUSED';
+    lastSyncTime: string | null;
+    lastSyncError: string | null;
+    groundDatabaseStatus: 'ONLINE' | 'OFFLINE';
+    lastSyncHistory: Array<any>;
+  };
+  config: {
+    isConfigured: boolean;
+    provider: string;
+    host: string;
+    database: string;
+    user: string;
+    port: number;
+    ssl: boolean;
+    autoSync: boolean;
+    syncIntervalMs: number;
+    maskedUrl: string;
+  };
+  timestamp?: string;
+}
+
+export interface ProviderInfo {
+  id: string;
+  name: string;
+  tagline: string;
+  badge: string;
+  icon: string;
+  authGuide: string;
+  docsUrl: string;
+  loginUrl: string;
+  exampleFormat: string;
+  sslDefault: boolean;
+}
+
+// === REAL WEBCAM HUMAN ACTIVITY RECOGNITION (HAR) TYPES ===
+
+export interface VisionLandmark {
+  x: number;
+  y: number;
+  z?: number;
+  visibility?: number;
+}
+
+export interface PoseFeatures {
+  leftKneeAngle: number;
+  rightKneeAngle: number;
+  avgKneeAngle: number;
+  leftElbowAngle: number;
+  rightElbowAngle: number;
+  avgElbowAngle: number;
+  torsoTiltAngle: number; // degrees from vertical
+  torsoHeight: number;
+  shoulderWidth: number;
+  hipWidth: number;
+  aspectRatio: number;
+  centerOfMassY: number;
+  centerOfMassX: number;
+  bodyHeightRatio: number;
+  wristKineticEnergy: number;
+  ankleKineticEnergy: number;
+  totalKineticEnergy: number;
+  verticalVelocity: number;
+  horizontalVelocity: number;
+  isRecumbent: boolean;
+  isUpright: boolean;
+  isKneesBent: boolean;
+  isLegsAlternating: boolean;
+  motionPeriodicity: number; // 0 to 1
+  timeSinceLastMovementSec: number;
+  visibilityScore: number;
+}
+
+export type VisionActivityState =
+  | ActivityType
+  | 'UNKNOWN'
+  | 'ANALYZING'
+  | 'NO_PERSON_DETECTED'
+  | 'CALIBRATING';
+
+export interface ActivityDetectionResult {
+  activity: VisionActivityState;
+  displayedActivity: string;
+  confidence: number;
+  isConfident: boolean;
+  reason: string;
+  source: 'REAL_WEBCAM' | 'SIMULATED';
+  detectionMode: 'POSE_LANDMARKS' | 'SIMULATED';
+  latencyMs: number;
+  fps: number;
+  landmarksCount: number;
+  multiplePeopleDetected: boolean;
+  isAnomaly: boolean;
+  anomalySeverity?: 'WARNING' | 'CRITICAL';
+  features: PoseFeatures | null;
+  timestamp: number;
+  durationMs: number;
+}
+
+export interface WebcamCalibration {
+  isCalibrated: boolean;
+  calibrating: boolean;
+  progress: number; // 0 to 100
+  baselineTorsoHeight: number;
+  baselineShoulderWidth: number;
+  baselineCenterOfMassY: number;
+  baselineStandingHeight: number;
+}
+
+export interface OpenCVDiagnosticsData {
+  isOpenCVReady: boolean;
+  resolution: string;
+  width: number;
+  height: number;
+  actualFps: number;
+  inferenceLatencyMs: number;
+  brightness: number; // 0 - 255
+  contrast: number;
+  lightQuality: 'GOOD' | 'LOW' | 'BRIGHT';
+  blurVariance: number; // Laplacian variance
+  imageQuality: 'GOOD' | 'BLURRY' | 'SUB-OPTIMAL';
+  motionMagnitude: number; // optical flow / frame diff magnitude (0 to 1+)
+  motionLevel: 'LOW' | 'MEDIUM' | 'HIGH';
+  isCalibrated: boolean;
+  calibrationCountdown: number; // 3, 2, 1, 0
+  noPersonDetected: boolean;
+  landmarksVisibleCount: number; // e.g. 33
+}
+

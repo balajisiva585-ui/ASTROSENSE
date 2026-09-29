@@ -1,17 +1,51 @@
 import React from 'react';
 import { useMission } from '../../context/MissionContext';
-import { ShieldAlert, AlertTriangle, Radio, CheckCircle, WifiOff } from 'lucide-react';
+import { ShieldAlert, AlertTriangle, Radio, CheckCircle, WifiOff, Database, ArrowRight } from 'lucide-react';
 
 export const AlertBanner: React.FC = () => {
-  const { session, anomalies, resolveAnomalyAlert } = useMission();
+  const { session, anomalies, resolveAnomalyAlert, databaseStatus, setTab } = useMission();
 
   const isOffline = session?.commStatus === 'OFFLINE';
   const unresolvedAnomalies = anomalies.filter(a => !a.resolved);
   const criticalAnomaly = unresolvedAnomalies.find(a => a.severity === 'CRITICAL');
   const warningAnomaly = unresolvedAnomalies.find(a => a.severity === 'WARNING');
+  const isDbConfigured = databaseStatus?.databaseConfigured ?? false;
+  const isPostgresOnline = databaseStatus?.postgres?.status === 'ONLINE';
 
   return (
     <div className="space-y-2 mb-4">
+      {/* First-Run Welcome / Ground Database Setup Prompt */}
+      {!isDbConfigured && (
+        <div className="relative bg-gradient-to-r from-space-950 via-cyan-950/60 to-space-950 border border-cyan-500/50 rounded-xl p-4 shadow-[0_0_25px_rgba(0,240,255,0.15)] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/40">
+              <Database className="w-5 h-5 animate-pulse" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-cyan-300">
+                  WELCOME TO ASTROSENSE
+                </span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                  GROUND DATABASE SETUP
+                </span>
+              </div>
+              <p className="text-xs text-slate-300 mt-1 font-sans">
+                Local onboard database: <span className="text-emerald-400 font-bold font-mono">✓ SQLite automatically configured</span> • Ground database: <span className="text-amber-400 font-bold font-mono">⚠ Setup required</span>
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 self-end md:self-center">
+            <button
+              onClick={() => setTab('database-setup')}
+              className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-space-950 font-bold text-xs font-mono shadow-hud-cyan transition-all flex items-center gap-1.5"
+            >
+              <span>CONNECT GROUND DATABASE</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      )}
       {/* Autonomous Mode Banner */}
       {isOffline && (
         <div className="relative bg-amber-950/80 border border-amber-500/60 rounded-xl p-4 shadow-hud-amber animate-pulse-slow">

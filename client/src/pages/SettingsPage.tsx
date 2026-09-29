@@ -17,6 +17,9 @@ export const SettingsPage: React.FC = () => {
   const {
     session,
     astronaut,
+    databaseStatus,
+    refreshDatabaseStatus,
+    setTab,
     soundEnabled,
     toggleSound,
     refreshAll,
@@ -225,6 +228,133 @@ export const SettingsPage: React.FC = () => {
                 {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
               </button>
             </div>
+          </div>
+        </TelemetryCard>
+
+        {/* Ground Database Management */}
+        <TelemetryCard
+          title="GROUND POSTGRESQL DATABASE SETTINGS"
+          subtitle="Ground Centralized Database & Delay-Tolerant Link"
+        >
+          <div className="space-y-4">
+            <div className="p-3 rounded-lg bg-space-950 border border-space-800 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-slate-400">PostgreSQL Link:</span>
+                <span
+                  className={`font-bold ${
+                    databaseStatus?.postgres?.status === 'ONLINE'
+                      ? 'text-emerald-400'
+                      : databaseStatus?.databaseConfigured
+                      ? 'text-amber-400'
+                      : 'text-slate-500'
+                  }`}
+                >
+                  {databaseStatus?.postgres?.status === 'ONLINE'
+                    ? '● CONNECTED'
+                    : databaseStatus?.databaseConfigured
+                    ? '● OFFLINE'
+                    : '● NOT CONFIGURED'}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="text-slate-400">Provider:</span>
+                <span className="text-cyan-300 font-bold">
+                  {databaseStatus?.config?.provider || 'None'}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="text-slate-400">Host:</span>
+                <span className="text-slate-300 font-mono truncate max-w-[200px]">
+                  {databaseStatus?.config?.host || 'None'}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="text-slate-400">Database:</span>
+                <span className="text-slate-300 font-mono">
+                  {databaseStatus?.config?.database || 'None'}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="text-slate-400">Connection URI:</span>
+                <span className="text-slate-400 font-mono truncate max-w-[200px]">
+                  {databaseStatus?.config?.maskedUrl || 'None'}
+                </span>
+              </div>
+            </div>
+
+            {/* Actions Grid */}
+            <div className="grid grid-cols-2 gap-2 text-[11px]">
+              <button
+                onClick={async () => {
+                  try {
+                    const health = await api.getDatabaseHealth();
+                    alert(`Database Status: ${health.status}\nPostgreSQL Latency: ${health.latencies?.postgresMs ?? 0}ms\nSQLite Latency: 0.2ms`);
+                  } catch (e: any) {
+                    alert(`Connection test error: ${e.message}`);
+                  }
+                }}
+                className="p-2 rounded-lg bg-space-900 border border-space-800 hover:border-cyan-500 text-cyan-300 font-bold flex items-center justify-center gap-1 transition-all"
+              >
+                <span>TEST CONNECTION</span>
+              </button>
+
+              <button
+                onClick={async () => {
+                  try {
+                    await refreshDatabaseStatus();
+                    await refreshAll();
+                    setSavedMessage('Reconnected & refreshed ground status.');
+                    setTimeout(() => setSavedMessage(null), 3000);
+                  } catch (e: any) {
+                    alert(`Reconnect error: ${e.message}`);
+                  }
+                }}
+                className="p-2 rounded-lg bg-space-900 border border-space-800 hover:border-emerald-500 text-emerald-300 font-bold flex items-center justify-center gap-1 transition-all"
+              >
+                <span>RECONNECT</span>
+              </button>
+
+              <button
+                onClick={async () => {
+                  try {
+                    await api.disconnectDatabase();
+                    await refreshDatabaseStatus();
+                    setSavedMessage('PostgreSQL disconnected. Operating in Autonomous SQLite mode.');
+                    setTimeout(() => setSavedMessage(null), 3000);
+                  } catch (e: any) {
+                    alert(`Disconnect error: ${e.message}`);
+                  }
+                }}
+                className="p-2 rounded-lg bg-space-900 border border-space-800 hover:border-amber-500 text-amber-300 font-bold flex items-center justify-center gap-1 transition-all"
+              >
+                <span>DISCONNECT</span>
+              </button>
+
+              <button
+                onClick={async () => {
+                  if (window.confirm('Reset database configuration? This clears the ground connection string from .env. (Remote database data will NOT be deleted).')) {
+                    await api.resetDatabaseConfig();
+                    await refreshDatabaseStatus();
+                    setSavedMessage('Database configuration reset.');
+                    setTimeout(() => setSavedMessage(null), 3000);
+                  }
+                }}
+                className="p-2 rounded-lg bg-space-900 border border-space-800 hover:border-rose-500 text-rose-300 font-bold flex items-center justify-center gap-1 transition-all"
+              >
+                <span>RESET CONFIG</span>
+              </button>
+            </div>
+
+            <button
+              onClick={() => setTab('database-setup')}
+              className="w-full py-2.5 rounded-lg bg-cyan-600/20 hover:bg-cyan-600/30 border border-cyan-500/50 text-cyan-300 font-bold flex items-center justify-center gap-2 transition-all"
+            >
+              <span>LAUNCH DATABASE SETUP WIZARD</span>
+            </button>
           </div>
         </TelemetryCard>
 

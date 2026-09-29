@@ -62,12 +62,38 @@ ASTROSENSE features three interactive, automated demonstration runners designed 
 
 ---
 
+## 📹 4. 17-Step Real Webcam + OpenCV.js Demo Lab
+*Interactive on-device browser optical verification using your physical webcam.*
+
+- **Trigger**: Click **"WEBCAM LAB (17-STEP)"** in the top navigation header or **"TEST REAL WEBCAM"** in the Live Video Monitor.
+- **Workflow**:
+  1. **Step 1: Start Mission Control** — Initializing aerospace console and HUD telemetry.
+  2. **Step 2: Select REAL WEBCAM Mode** — CAM-01 switches to physical optical sensor; secondary feeds remain simulated habitat sensors.
+  3. **Step 3: Camera Permission & Link** — Establishing local WebRTC stream with zero cloud video upload.
+  4. **Step 4: 3-Second Calibration** — Stand upright in neutral balance as system calibrates baseline height, shoulder width, and luminance.
+  5. **Step 5: MediaPipe 33-Point Pose Lock** — 33 body skeletal landmarks acquired with green overlay at 25-30 FPS.
+  6. **Step 6: Stand Upright (STANDING)** — Upright torso (< 26° tilt), straight knees (> 138°), low optical flow motion (< 0.05).
+  7. **Step 7: Sit Down (SITTING)** — Lowered center of mass, knee flexion ~70°-135°, stable seated posture.
+  8. **Step 8: Walk Across Frame (WALKING)** — Alternating leg trajectories with real translational displacement (> 0.07).
+  9. **Step 9: Repetitive Aerobic Movement (EXERCISING)** — Kinetic energy surge (> 0.30) with periodic oscillation cycle (squats, curls).
+  10. **Step 10: Cease Movement** — Low kinetic motion hold below 0.04.
+  11. **Step 11: Trigger Inactivity Alert (LONG INACTIVITY)** — Stillness > 15s triggers in-cabin welfare check.
+  12. **Step 12: Step Completely Out of Frame** — Body leaves optical field of view.
+  13. **Step 13: Display NO PERSON DETECTED** — Landmark count drops to 0; zero synthetic activity hallucination.
+  14. **Step 14: Anomaly Rule Evaluation** — Client-side safety bounds verify kinematic safety envelope.
+  15. **Step 15: Local SQLite Persistence** — Real activity classifications committed to `astrosense_local.sqlite`.
+  16. **Step 16: Simulate Communication Loss** — Link toggled to `OFFLINE`; autonomous onboard mode engages.
+  17. **Step 17: Restore Earth Link + PostgreSQL Sync** — Ground connection restored; Delay-Tolerant Sync Engine flushes offline backlog to PostgreSQL (0% -> 100%).
+
+---
+
 ## 🎮 Manual Interactive Exploration
 
 You can also test every feature manually:
 - **Toggle Communication Link**: Click the `COMM: ONLINE / OFFLINE` badge to simulate blackout on demand.
-- **Talk to AstroSense**: Click `🎙️ TALK TO ASTROSENSE` to issue voice or text queries.
+- **Talk to AstroSense**: Click `🎙️ TALK TO ASTROSENSE` to issue voice or text queries (NASA Gateway, ISRO Gaganyaan, HAR activities, telemetry).
 - **Robot Control**: Navigate to `/robot-control` and command `ARES-1` or `NOVA-2` (`PATROL`, `INSPECT`, `ASSIST`).
 - **Crew Routine**: Navigate to `/crew-routine` to manage circadian schedules and trigger voice announcements.
 - **Camera Feeds**: Switch between simulated animations, local video uploads, or webcam input on `/mission-monitor`.
 - **Asteroid Radar**: Trigger synthetic delta-V trajectory variance on `/asteroids`.
+- **Hybrid Database**: Navigate to `/database-setup` to inspect SQLite and PostgreSQL sync state.

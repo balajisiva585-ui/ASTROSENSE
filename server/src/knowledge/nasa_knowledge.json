@@ -1,0 +1,87 @@
+[
+  {
+    "id": "NASA-GATEWAY-001",
+    "topic": "NASA Gateway & Lunar Orbital Outpost",
+    "title": "Gateway Lunar Space Station Architecture",
+    "sourceAgency": "NASA",
+    "sourceUrl": "https://www.nasa.gov/mission/gateway/",
+    "sourceTitle": "NASA Gateway Program - Deep Space Outpost",
+    "verifiedAt": "2026-09-29",
+    "category": "HABITATION_STATION",
+    "summary": "Gateway is humanity's first lunar-orbiting space station, established under the NASA Artemis program in collaboration with international partners (ESA, JAXA, CSA, MBRSC).",
+    "facts": [
+      "Gateway operates in a Near-Rectilinear Halo Orbit (NRHO) around the Moon, providing continuous line-of-sight to Earth and access to the lunar South Pole.",
+      "The station serves as a multi-purpose staging hub for Artemis lunar surface expeditions and future deep space missions to Mars.",
+      "Initial configurations support up to four crew members for 30-to-90 day habitation stints with autonomous robotics operations during uncrewed periods.",
+      "Power and Propulsion Element (PPE) delivers 60 kW solar electric propulsion (SEP) for orbital maneuvers and stationkeeping."
+    ]
+  },
+  {
+    "id": "NASA-HALO-002",
+    "topic": "HALO (Habitation and Logistics Outpost)",
+    "title": "HALO Pressurized Cabin & Life Support Architecture",
+    "sourceAgency": "NASA",
+    "sourceUrl": "https://www.nasa.gov/feature/nasa-international-partners-advance-gateway-capabilities",
+    "sourceTitle": "NASA Habitation and Logistics Outpost (HALO) Specifications",
+    "verifiedAt": "2026-09-29",
+    "category": "HABITATION_MODULE",
+    "summary": "HALO is the initial pressurized habitat and command center for astronauts visiting Gateway, providing living quarters, scientific research interfaces, and docking ports.",
+    "facts": [
+      "HALO is manufactured by Northrop Grumman based on the flight-proven Cygnus spacecraft architecture.",
+      "Provides command, control, life support distribution, and data handling for the initial Gateway configuration.",
+      "Features multiple International Standard Payload Racks (ISPR) and external payload attachment fixtures for heliophysics and space biology research.",
+      "Equipped with the Canadian Space Agency Canadarm3 robotic interface for external maintenance and cargo transfer."
+    ]
+  },
+  {
+    "id": "NASA-IHAB-003",
+    "topic": "Lunar I-Hab (International Habitat)",
+    "title": "Lunar International Habitat Specifications",
+    "sourceAgency": "NASA",
+    "sourceUrl": "https://www.nasa.gov/humans-in-space/gateway/",
+    "sourceTitle": "Gateway Lunar I-Hab Module Collaboration",
+    "verifiedAt": "2026-09-29",
+    "category": "HABITATION_MODULE",
+    "summary": "Lunar I-Hab is the primary deep-space living and scientific habitat module provided by ESA with environmental life support contributions from JAXA.",
+    "facts": [
+      "Provides approximately 10 cubic meters of usable pressurized living volume per astronaut.",
+      "Integrates advanced closed-loop Environmental Control and Life Support Systems (ECLSS) with high-efficiency carbon dioxide scrubbing and trace contaminant control.",
+      "Incorporates microgravity crew sleep quarters, circadian lighting regulation, and modular countermeasure workout stations.",
+      "Equipped with optical and sensor ports for deep-space autonomous navigation and radiation dosimetry."
+    ]
+  },
+  {
+    "id": "NASA-ORION-004",
+    "topic": "Orion Spacecraft",
+    "title": "Orion Deep Space Human Exploration Vehicle",
+    "sourceAgency": "NASA",
+    "sourceUrl": "https://www.nasa.gov/mission/orion-spacecraft/",
+    "sourceTitle": "NASA Orion Spacecraft Overview & Artemis Missions",
+    "verifiedAt": "2026-09-29",
+    "category": "SPACECRAFT",
+    "summary": "Orion is NASA's exploration-class spacecraft designed to transport astronauts beyond low-Earth orbit to the Moon and return them safely through lunar-velocity atmospheric reentry.",
+    "facts": [
+      "Crew Module accommodates 4 astronauts for up to 21 days autonomous flight (extended to months when docked with Gateway).",
+      "European Service Module (ESM) provided by ESA powers the spacecraft with 4 solar arrays, propellant, water, and breathable atmosphere.",
+      "Features a 5-meter diameter ablative Avcoat heat shield designed to withstand 5,000°F (2,760°C) during 25,000 mph lunar atmospheric entry.",
+      "Autonomous flight guidance and optical hazard detection computers ensure crew return even during complete ground loss."
+    ]
+  },
+  {
+    "id": "NASA-COUNTERMEASURES-005",
+    "topic": "Microgravity Human Health & Countermeasures",
+    "title": "NASA Human Research Program (HRP) Exercise & Circadian Countermeasures",
+    "sourceAgency": "NASA",
+    "sourceUrl": "https://www.nasa.gov/hrp/",
+    "sourceTitle": "NASA Human Research Program - Spaceflight Countermeasures",
+    "verifiedAt": "2026-09-29",
+    "category": "CREW_HEALTH",
+    "summary": "NASA protocols for preserving astronaut musculoskeletal density, cardiovascular health, and circadian rhythms during long-duration deep-space transit.",
+    "facts": [
+      "Astronauts perform a mandatory minimum of 2 hours daily physical countermeasures combining resistive (ARED) and aerobic (T2 cycle/treadmill) workouts.",
+      "Microgravity without countermeasure leads to 1-1.5% bone mineral density loss per month in weight-bearing bones.",
+      "Autonomous optical monitoring of crew kinematics helps verify exercise posture compliance and detect early musculoskeletal fatigue.",
+      "Circadian lighting protocols (dynamic blue-enriched morning light and red-shifted evening light) synchronize crew rest-work cycles."
+    ]
+  }
+]

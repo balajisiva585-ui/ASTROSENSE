@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { CameraFeedState } from '../../types';
+import { RealWebcamFeed } from './RealWebcamFeed';
 import {
   Camera,
   Maximize2,
@@ -27,40 +28,11 @@ export const CameraFeed: React.FC<CameraFeedProps> = ({
   isExpanded = false,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [webcamError, setWebcamError] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [localVideoUrl, setLocalVideoUrl] = useState<string | null>(null);
 
-  // Handle Webcam streaming
-  useEffect(() => {
-    let stream: MediaStream | null = null;
-    if (feed.streamSource === 'WEBCAM') {
-      navigator.mediaDevices?.getUserMedia({ video: { width: 640, height: 360 } })
-        .then(s => {
-          stream = s;
-          if (videoRef.current) {
-            videoRef.current.srcObject = s;
-            videoRef.current.play().catch(console.error);
-          }
-          setWebcamError(null);
-        })
-        .catch(err => {
-          console.warn('Webcam permission denied or unavailable:', err);
-          setWebcamError('Webcam unavailable. Switching to simulated telemetry video.');
-          onUpdateSource?.('SIMULATED');
-        });
-    }
-
-    return () => {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-      }
-    };
-  }, [feed.streamSource, onUpdateSource]);
-
-  // Handle Animated Canvas Simulation
+  // Handle Animated Canvas Simulation for SIMULATED feeds
   useEffect(() => {
     if (feed.streamSource !== 'SIMULATED') return;
 
@@ -237,6 +209,18 @@ export const CameraFeed: React.FC<CameraFeedProps> = ({
     }
   };
 
+  // If WEBCAM source is chosen, render the authentic on-device RealWebcamFeed
+  if (feed.streamSource === 'WEBCAM') {
+    return (
+      <RealWebcamFeed
+        module={feed.module}
+        astronautId={feed.assignedAstronautId}
+        isExpanded={isExpanded}
+        onSwitchToSimulation={() => onUpdateSource?.('SIMULATED')}
+      />
+    );
+  }
+
   const isAnomaly = feed.currentActivity === 'FALL_ABNORMAL_MOVEMENT' || feed.safetyStatus === 'CRITICAL';
 
   return (
@@ -259,16 +243,6 @@ export const CameraFeed: React.FC<CameraFeedProps> = ({
             width={640}
             height={360}
             className="w-full h-full object-cover"
-          />
-        )}
-
-        {feed.streamSource === 'WEBCAM' && (
-          <video
-            ref={videoRef}
-            autoPlay
-            playsInline
-            muted
-            className="w-full h-full object-cover mirror"
           />
         )}
 
@@ -378,12 +352,12 @@ export const CameraFeed: React.FC<CameraFeedProps> = ({
               onUpdateSource?.('WEBCAM');
             }}
             className={`px-2 py-0.5 rounded text-[10px] font-mono transition ${
-              feed.streamSource === 'WEBCAM'
+              (feed.streamSource as string) === 'WEBCAM'
                 ? 'bg-cyan-500/30 text-cyan-300 border border-cyan-500/50'
                 : 'bg-space-800 text-gray-400 hover:text-gray-200'
             }`}
           >
-            WEBCAM
+            REAL WEBCAM
           </button>
           <label
             onClick={(e) => e.stopPropagation()}

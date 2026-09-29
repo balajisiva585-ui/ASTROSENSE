@@ -7,7 +7,8 @@ Deep space exploration environments are characterized by high orbital latency, l
 ## 1. Core Architectural Pillars
 
 ### 1.1 Zero Cloud Dependency
-- **Embedded Neural Inference**: 12-class HAR model runs locally on the edge processor at 24ms per frame.
+- **On-Device Vision HAR**: MediaPipe Tasks Vision (`PoseLandmarker`) runs 100% locally in the browser via WebAssembly (Wasm) and GPU/CPU delegates. No webcam video or raw frames are ever uploaded to cloud vision APIs.
+- **Embedded Neural Inference**: 12-class HAR temporal classifier evaluates biomechanical angles, kinetic energy, and posture locally at measured sub-50ms latency.
 - **Local Space Knowledge Base**: 30+ comprehensive aerospace reference documents stored locally on flash.
 - **Local Speech & NLP Processing**: Voice queries parsed deterministically without external cloud speech APIs.
 

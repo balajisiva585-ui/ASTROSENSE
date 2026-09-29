@@ -224,6 +224,7 @@ export interface AsteroidObject {
 
 export interface SpaceKnowledgeItem {
   id: string;
+  topic?: string;
   category:
     | 'SPACE_BASICS'
     | 'MICROGRAVITY'
@@ -238,13 +239,37 @@ export interface SpaceKnowledgeItem {
     | 'EARTH_OBSERVATION'
     | 'MISSION_OPERATIONS'
     | 'HUMAN_ACTIVITY_RECOGNITION'
-    | 'EMERGENCY_PROCEDURES';
-  keywords: string[];
+    | 'EMERGENCY_PROCEDURES'
+    | 'HABITATION_STATION'
+    | 'HABITATION_MODULE'
+    | 'SPACECRAFT'
+    | 'CREW_HEALTH'
+    | 'HUMAN_SPACEFLIGHT'
+    | 'LUNAR_EXPLORATION'
+    | 'SOLAR_PHYSICS'
+    | 'SPACE_STATION'
+    | 'SPACE_ROBOTICS';
+  keywords?: string[];
   title: string;
   summary: string;
-  content: string;
-  source: string;
-  verified: boolean;
+  content?: string;
+  facts?: string[];
+  source?: string;
+  sourceAgency?: 'NASA' | 'ISRO' | 'ESA' | 'JAXA' | 'ASTROSENSE';
+  sourceTitle?: string;
+  sourceUrl?: string;
+  verifiedAt?: string;
+  verified?: boolean;
+}
+
+export interface ChatMessageSource {
+  title: string;
+  category: string;
+  type: 'VERIFIED_KNOWLEDGE' | 'SIMULATED_TELEMETRY' | 'AI_RECOMMENDATION' | 'SIMULATED_ROBOT' | 'SIMULATED_SCHEDULE';
+  sourceAgency?: 'NASA' | 'ISRO' | 'ESA' | 'JAXA' | 'ASTROSENSE';
+  sourceTitle?: string;
+  sourceUrl?: string;
+  verifiedAt?: string;
 }
 
 export interface ChatMessage {
@@ -253,11 +278,7 @@ export interface ChatMessage {
   text: string;
   timestamp: string;
   category?: string;
-  sources?: Array<{
-    title: string;
-    category: string;
-    type: 'VERIFIED_KNOWLEDGE' | 'SIMULATED_TELEMETRY' | 'AI_RECOMMENDATION' | 'SIMULATED_ROBOT' | 'SIMULATED_SCHEDULE';
-  }>;
+  sources?: ChatMessageSource[];
   recommendedAction?: string;
   isDecisionSupport?: boolean;
 }

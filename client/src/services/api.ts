@@ -14,11 +14,31 @@ import {
   SpaceKnowledgeItem,
   ChatMessage,
   LiveEventStreamItem,
+  DatabaseStatusData,
+  ProviderInfo,
 } from '../types';
 
-const API_BASE = '/api';
+export const getApiBaseUrl = (): string => {
+  const envUrl = import.meta.env.VITE_API_BASE_URL;
+  if (envUrl && typeof envUrl === 'string' && envUrl.trim().length > 0) {
+    const trimmed = envUrl.trim().replace(/\/+$/, '');
+    return trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`;
+  }
+  return '/api';
+};
+
+export const API_BASE = getApiBaseUrl();
 
 export const api = {
+  // Helpers
+  getExportCsvUrl(): string {
+    return `${API_BASE}/export/events.csv`;
+  },
+
+  getExportJsonUrl(): string {
+    return `${API_BASE}/export/report.json`;
+  },
+
   // Astronaut
   async getAstronaut(id = 'AST-01'): Promise<Astronaut> {
     const res = await fetch(`${API_BASE}/astronaut?id=${id}`);
@@ -453,4 +473,84 @@ export const api = {
     });
     return res.json();
   },
+
+  // Hybrid Database Management (SQLite + PostgreSQL)
+  async getDatabaseStatus(): Promise<DatabaseStatusData> {
+    const res = await fetch(`${API_BASE}/database/status`);
+    const json = await res.json();
+    return json.data;
+  },
+
+  async getDatabaseHealth(): Promise<any> {
+    const res = await fetch(`${API_BASE}/database/health`);
+    const json = await res.json();
+    return json.data;
+  },
+
+  async getDatabaseStats(): Promise<any> {
+    const res = await fetch(`${API_BASE}/database/stats`);
+    const json = await res.json();
+    return json.data;
+  },
+
+  async getDatabaseSyncHistory(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/database/sync-history`);
+    const json = await res.json();
+    return json.data;
+  },
+
+  async getDatabaseProviders(): Promise<ProviderInfo[]> {
+    const res = await fetch(`${API_BASE}/database/providers`);
+    const json = await res.json();
+    return json.data;
+  },
+
+  async testDatabaseConnection(databaseUrl: string, ssl = true): Promise<{
+    success: boolean;
+    data?: any;
+    error?: string;
+  }> {
+    const res = await fetch(`${API_BASE}/database/test-connection`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ databaseUrl, ssl }),
+    });
+    return res.json();
+  },
+
+  async saveDatabaseConfig(config: {
+    databaseUrl: string;
+    ssl?: boolean;
+    autoSync?: boolean;
+    syncIntervalMs?: number;
+  }): Promise<{
+    success: boolean;
+    message?: string;
+    data?: any;
+    error?: string;
+  }> {
+    const res = await fetch(`${API_BASE}/database/config`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(config),
+    });
+    return res.json();
+  },
+
+  async triggerDatabaseSync(): Promise<any> {
+    const res = await fetch(`${API_BASE}/database/sync`, { method: 'POST' });
+    const json = await res.json();
+    return json.data;
+  },
+
+  async disconnectDatabase(): Promise<any> {
+    const res = await fetch(`${API_BASE}/database/disconnect`, { method: 'POST' });
+    return res.json();
+  },
+
+  async resetDatabaseConfig(): Promise<any> {
+    const res = await fetch(`${API_BASE}/database/reset`, { method: 'POST' });
+    return res.json();
+  },
 };
+

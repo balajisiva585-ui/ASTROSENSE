@@ -83,26 +83,43 @@ flowchart TD
 ```mermaid
 sequenceDiagram
     participant Astronaut as 👨‍🚀 Astronaut Motion
-    participant Cam as 🎥 Video Stream (CAM-01..04)
-    participant Pose as 🦴 Skeleton Extractor (17 Joints)
-    participant HAR as 🧠 12-Class HAR Classifier
+    participant Cam as 🎥 Real Browser Webcam / Simulation
+    participant Pose as 🦴 MediaPipe PoseLandmarker (33 Joints)
+    participant Feats as 📐 PoseFeatureExtractor & Temporal Buffer
+    participant Classifier as 🧠 Rule-Based Temporal HAR Classifier
     participant Anomaly as 🚨 Safety Anomaly Detector
-    participant Vault as 💾 Local Event Vault
-    participant Robot as 🤖 ARES-1 & NOVA-2
+    participant Vault as 💾 Local Event Vault (SQLite)
+    participant Sync as 🔄 Delay-Tolerant Sync Engine
+    participant Ground as 🌍 PostgreSQL Ground Database
 
-    Astronaut->>Cam: Motion in habitat module
-    Cam->>Pose: 30 FPS spatial coordinates
-    Pose->>HAR: Sliding 30-frame temporal tensor
-    HAR->>HAR: Quantized inference (24ms latency)
-    HAR->>Anomaly: Predicted activity + confidence %
-    alt Kinetic Fall or Prolonged Inactivity
-        Anomaly->>Vault: Store Critical Anomaly Event (ACID)
-        Anomaly->>Robot: Dispatch ARES-1 Wellness Check & NOVA-2 Telemetry Corroboration
-        Anomaly->>Cam: Overlay Hazard Warning Banners
-    else Nominal Routine Motion
-        HAR->>Vault: Commit routine activity transition
+    Astronaut->>Cam: Real physical movement in front of webcam
+    Cam->>Pose: Video frame capture (requestAnimationFrame)
+    Pose->>Feats: 33 normalized landmarks + visibility scores
+    Feats->>Feats: Extract joint angles (knee, elbow, torso tilt, velocity)
+    Feats->>Classifier: Rolling 45-frame temporal tensor
+    Classifier->>Classifier: Apply 12-class taxonomy + anti-flicker smoothing
+    Classifier->>Anomaly: Detected activity + measured confidence %
+    alt Confident Activity Sustained (>3s)
+        Classifier->>Vault: Persist event in SQLite (sync_status = PENDING)
+        alt Communication ONLINE
+            Vault->>Sync: Stream event to SyncEngine
+            Sync->>Ground: Upsert into PostgreSQL ground database
+        end
     end
 ```
+
+### 2.1.1 Real Webcam HAR Architecture vs Simulation Mode
+ASTROSENSE provides two clearly distinguished video processing modes:
+1. **REAL WEBCAM MODE**:
+   - **Capture**: Direct client-side video capture via `navigator.mediaDevices.getUserMedia`.
+   - **Inference**: On-device WebAssembly execution via `@mediapipe/tasks-vision` `PoseLandmarker` detecting 33 full-body landmarks.
+   - **Feature Extraction**: Biomechanical angles (knee flexion, elbow flexion, torso inclination vs vertical), center of mass (CoM), aspect ratio, and kinetic energy.
+   - **Temporal Buffer**: 45-frame rolling window analyzing velocity vectors, movement periodicity, and inactivity duration.
+   - **Truthful Classification**: Confidently classifies `STANDING`, `SITTING`, `WALKING`, `EXERCISING`, `SLEEPING_RESTING`, `FALL_ABNORMAL_MOVEMENT`, `LONG_INACTIVITY`. Fine motor tool/object activities (`EATING`, `DRINKING`, `WORKING`, `OPERATING_EQUIPMENT`, `PICKING_CARRYING`) are conservatively outputted as `UNKNOWN` / `ANALYZING` with `"Insufficient visual evidence"` rather than hallucinated.
+   - **Privacy & Offline Security**: 100% on-device execution. No video frames are uploaded to external cloud vision APIs.
+2. **SIMULATION MODE**:
+   - Provides synthetic space habitat microgravity physics and simulated multi-camera feeds (`CAM-01` to `CAM-04`) for offline demonstrations, Judge Demo walkthroughs, and automated testing.
+
 
 ### 2.2 Communication Blackout & Delay-Tolerant Re-Synchronization
 ```mermaid

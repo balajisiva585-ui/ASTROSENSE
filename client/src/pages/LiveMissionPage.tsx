@@ -2,6 +2,7 @@ import React from 'react';
 import { useMission } from '../context/MissionContext';
 import { MissionGlobe } from '../components/mission/MissionGlobe';
 import { TelemetryPanel } from '../components/mission/TelemetryPanel';
+import { OrbitalMap } from '../components/space/OrbitalMap';
 import { CrewLiveStatus } from '../components/crew/CrewLiveStatus';
 import { LiveEventStream } from '../components/mission/LiveEventStream';
 import { Activity, ShieldCheck, Radio } from 'lucide-react';
@@ -52,6 +53,12 @@ export const LiveMissionPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div className="lg:col-span-8 space-y-6">
           <MissionGlobe telemetry={telemetry} commStatus={commStatus} />
+          <OrbitalMap
+            altitudeKm={telemetry?.orbitAltitudeKm ?? 418.4}
+            velocityKmS={telemetry?.orbitVelocityKmS ?? 7.66}
+            orbitPeriodMins={telemetry?.orbitalPeriodMins ?? 92.8}
+            commStatus={commStatus}
+          />
           <TelemetryPanel telemetry={telemetry} commStatus={commStatus} />
         </div>
 

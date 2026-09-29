@@ -47,12 +47,15 @@ export const SpaceAssistant: React.FC = () => {
   };
 
   const quickPrompts = [
-    "What's happening on the mission right now?",
-    "Which astronaut is currently active?",
-    "What is the spacecraft temperature & pressure?",
-    "Is there any active anomaly on station?",
-    "What should the crew do if communication is lost?",
-    "What asteroids are currently being tracked?",
+    'What is Gaganyaan?',
+    'What is Aditya-L1?',
+    'What is Gateway?',
+    'What is HALO?',
+    'What activities can the webcam detect?',
+    'Why is the camera showing ANALYZING?',
+    'What does LONG INACTIVITY mean?',
+    'What happens during communication loss?',
+    'Show live spacecraft telemetry',
   ];
 
   return (
@@ -75,41 +78,41 @@ export const SpaceAssistant: React.FC = () => {
 
       {/* Slide-out Chat Drawer */}
       {isAssistantOpen && (
-        <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-space-900/95 border-l border-cyan-500/40 backdrop-blur-xl shadow-2xl flex flex-col font-mono animate-fade-in">
+        <div className="fixed inset-y-0 right-0 z-50 w-full max-w-lg bg-space-950/98 border-l border-cyan-500/40 backdrop-blur-2xl shadow-2xl flex flex-col font-mono animate-fade-in">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3.5 border-b border-space-800 bg-space-950/90">
+          <div className="flex items-center justify-between px-4 py-3.5 border-b border-space-800 bg-space-900/90">
             <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/40">
+              <div className="p-2 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 shadow-hud-cyan">
                 <Bot className="w-5 h-5" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-bold text-slate-100 tracking-wide">
+                  <h3 className="text-sm font-bold text-white tracking-wide">
                     ASTROSENSE AI
                   </h3>
                   <span className="text-[9px] uppercase px-1.5 py-0.2 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-bold">
-                    LOCAL EDGE
+                    OFFLINE LOCAL KNOWLEDGE
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-400 font-sans">
-                  Autonomous Space Mission & Knowledge Assistant
+                <p className="text-[11px] text-gray-400 font-sans">
+                  Autonomous Space Mission & NASA/ISRO Knowledge Base
                 </p>
               </div>
             </div>
 
             <button
               onClick={closeAssistant}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-space-800 transition-colors"
+              className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-space-800 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* System Status Sub-banner */}
-          <div className="px-4 py-2 bg-space-950/60 border-b border-space-800 text-[10px] flex items-center justify-between text-slate-400">
-            <div className="flex items-center gap-1.5">
+          <div className="px-4 py-2 bg-space-900/60 border-b border-space-800 text-[10px] flex items-center justify-between text-gray-400">
+            <div className="flex items-center gap-1.5 text-cyan-300">
               <Cpu className="w-3 h-3 text-cyan-400" />
-              <span>Model: Local Knowledge Engine (Zero Cloud)</span>
+              <span>Zero Cloud Vision / Zero OpenAI API — 100% Onboard</span>
             </div>
             <span className={`font-bold ${session?.commStatus === 'OFFLINE' ? 'text-amber-400' : 'text-emerald-400'}`}>
               LINK: {session?.commStatus || 'ONLINE'}
@@ -127,17 +130,22 @@ export const SpaceAssistant: React.FC = () => {
                   className={`flex flex-col ${isBot ? 'items-start' : 'items-end'}`}
                 >
                   <div
-                    className={`max-w-[92%] p-3.5 rounded-2xl ${
+                    className={`max-w-[94%] p-3.5 rounded-2xl ${
                       isBot
-                        ? 'bg-space-950/90 border border-space-800 text-slate-200 rounded-tl-sm'
+                        ? 'bg-space-900/90 border border-space-800 text-gray-200 rounded-tl-sm shadow-lg'
                         : 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-tr-sm shadow-md font-sans'
                     }`}
                   >
                     {/* Bot Message Header */}
                     {isBot && (
-                      <div className="flex items-center gap-1.5 text-[10px] text-cyan-400 font-bold mb-1.5 pb-1 border-b border-space-800/60">
-                        <Sparkles className="w-3 h-3 text-cyan-400" />
-                        <span>AstroSense Mission Intelligence</span>
+                      <div className="flex items-center justify-between gap-1.5 text-[10px] text-cyan-400 font-bold mb-2 pb-1 border-b border-space-800/80">
+                        <span className="flex items-center gap-1">
+                          <Sparkles className="w-3 h-3 text-cyan-400" />
+                          <span>AstroSense Mission Intelligence</span>
+                        </span>
+                        <span className="text-[9px] text-gray-400 font-normal">
+                          {new Date(msg.timestamp).toTimeString().split(' ')[0]} UTC
+                        </span>
                       </div>
                     )}
 
@@ -146,7 +154,7 @@ export const SpaceAssistant: React.FC = () => {
                       {msg.text.split('\n').map((line, i) => {
                         if (line.startsWith('• ') || line.startsWith('- ')) {
                           return (
-                            <div key={i} className="pl-2 my-0.5 text-slate-300">
+                            <div key={i} className="pl-2 my-0.5 text-gray-300">
                               {line}
                             </div>
                           );
@@ -162,27 +170,52 @@ export const SpaceAssistant: React.FC = () => {
                       })}
                     </div>
 
-                    {/* Sources Badge */}
+                    {/* Verified Knowledge & Sources Attribution Cards */}
                     {msg.sources && msg.sources.length > 0 && (
-                      <div className="mt-2.5 pt-2 border-t border-space-800/80 flex flex-wrap gap-1.5">
+                      <div className="mt-3 pt-2.5 border-t border-space-800/80 flex flex-col gap-2">
                         {msg.sources.map((src, sIdx) => {
+                          const isNasa = src.sourceAgency === 'NASA';
+                          const isIsro = src.sourceAgency === 'ISRO';
                           const isSim = src.type === 'SIMULATED_TELEMETRY';
                           const isRec = src.type === 'AI_RECOMMENDATION';
 
                           return (
-                            <span
+                            <div
                               key={sIdx}
-                              className={`text-[9px] px-2 py-0.5 rounded font-mono font-semibold border flex items-center gap-1 ${
-                                isSim
-                                  ? 'bg-blue-950/80 text-blue-300 border-blue-800/60'
-                                  : isRec
-                                  ? 'bg-amber-950/80 text-amber-300 border-amber-700/60'
-                                  : 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60'
-                              }`}
+                              className="bg-space-950/90 rounded-lg p-2.5 border border-space-800 flex flex-col gap-1.5 font-mono text-[10px]"
                             >
-                              <ShieldCheck className="w-2.5 h-2.5" />
-                              <span>{src.type.replace(/_/g, ' ')}</span>
-                            </span>
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-1.5 font-bold">
+                                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                                  <span className="text-emerald-300">
+                                    {isNasa
+                                      ? 'VERIFIED SPACE KNOWLEDGE // NASA'
+                                      : isIsro
+                                      ? 'VERIFIED SPACE KNOWLEDGE // ISRO'
+                                      : src.type.replace(/_/g, ' ')}
+                                  </span>
+                                </div>
+
+                                {src.sourceUrl && (
+                                  <a
+                                    href={src.sourceUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="px-2 py-0.5 rounded bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 flex items-center gap-1 transition"
+                                  >
+                                    <span>OPEN SOURCE</span>
+                                    <ExternalLink className="w-2.5 h-2.5" />
+                                  </a>
+                                )}
+                              </div>
+
+                              <div className="text-gray-400 flex items-center justify-between">
+                                <span>{src.sourceTitle || src.title}</span>
+                                {src.verifiedAt && (
+                                  <span className="text-gray-500 text-[9px]">Verified: {src.verifiedAt}</span>
+                                )}
+                              </div>
+                            </div>
                           );
                         })}
                       </div>
@@ -190,23 +223,19 @@ export const SpaceAssistant: React.FC = () => {
 
                     {/* Human Verification Disclaimer for Decision Support */}
                     {msg.isDecisionSupport && (
-                      <div className="mt-2 p-2 rounded bg-amber-950/60 border border-amber-500/40 text-[10px] text-amber-200/90 font-mono">
-                        ⚠️ <strong>Decision Support:</strong> Human verification required before operational command execution.
+                      <div className="mt-2.5 p-2 rounded bg-amber-950/60 border border-amber-500/40 text-[10px] text-amber-200/90 font-mono">
+                        ⚠️ <strong>AI DECISION SUPPORT:</strong> Human verification required before operational execution.
                       </div>
                     )}
                   </div>
-
-                  <span className="text-[9px] text-slate-500 mt-1 px-1 font-mono">
-                    {new Date(msg.timestamp).toTimeString().split(' ')[0]} UTC
-                  </span>
                 </div>
               );
             })}
 
             {isChatLoading && (
-              <div className="flex items-center gap-2 text-cyan-400 text-xs p-3 rounded-xl bg-space-950 border border-space-800 font-mono animate-pulse">
+              <div className="flex items-center gap-2 text-cyan-400 text-xs p-3 rounded-xl bg-space-900 border border-space-800 font-mono animate-pulse">
                 <Bot className="w-4 h-4 animate-spin" />
-                <span>Querying local mission knowledge base...</span>
+                <span>Querying local verified space knowledge base...</span>
               </div>
             )}
 
@@ -214,13 +243,13 @@ export const SpaceAssistant: React.FC = () => {
           </div>
 
           {/* Quick Prompt Suggestions */}
-          <div className="px-3 py-2 bg-space-950/90 border-t border-space-800 overflow-x-auto no-scrollbar">
+          <div className="px-3 py-2 bg-space-900/90 border-t border-space-800 overflow-x-auto no-scrollbar">
             <div className="flex items-center gap-1.5 whitespace-nowrap">
               {quickPrompts.map((qp, idx) => (
                 <button
                   key={idx}
                   onClick={() => sendAssistantMessage(qp)}
-                  className="px-2.5 py-1 rounded-full bg-space-900 hover:bg-space-850 border border-space-750 text-[10px] text-slate-300 hover:text-cyan-300 transition-colors"
+                  className="px-2.5 py-1 rounded-full bg-space-950 hover:bg-space-800 border border-space-700 text-[10px] text-gray-300 hover:text-cyan-300 transition-colors"
                 >
                   {qp}
                 </button>
@@ -231,25 +260,32 @@ export const SpaceAssistant: React.FC = () => {
           {/* Input Bar */}
           <form
             onSubmit={handleSend}
-            className="p-3 bg-space-950 border-t border-space-800 flex items-center gap-2"
+            className="p-3 bg-space-900 border-t border-space-800 flex items-center gap-2"
           >
             <input
               type="text"
-              placeholder="Ask AstroSense AI (telemetry, crew, asteroids)..."
+              placeholder="Ask about NASA Gateway, ISRO Gaganyaan, HAR activities, telemetry..."
               value={input}
               onChange={e => setInput(e.target.value)}
-              className="flex-1 px-3.5 py-2.5 rounded-xl bg-space-900 border border-space-800 text-slate-100 placeholder-slate-500 text-xs font-sans focus:outline-none focus:border-cyan-500 transition-colors"
+              className="flex-1 px-3.5 py-2.5 rounded-xl bg-space-950 border border-space-800 text-white placeholder-gray-500 text-xs font-sans focus:outline-none focus:border-cyan-500 transition-colors"
             />
             <button
               type="submit"
               disabled={!input.trim() || isChatLoading}
+              aria-label="Send message to assistant"
               className="p-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 disabled:opacity-40 text-space-950 font-bold transition-all shadow-hud-cyan"
             >
               <Send className="w-4 h-4" />
             </button>
           </form>
+
+          {/* Scientific Transparency & Academic Attribution Disclaimer Footer */}
+          <div className="px-4 py-2 bg-space-950 border-t border-space-800/80 text-[9px] font-sans text-gray-500 text-center leading-relaxed">
+            ASTROSENSE is an independent student prototype. NASA and ISRO information is sourced from publicly available official agency material.
+          </div>
         </div>
       )}
     </>
   );
 };
+

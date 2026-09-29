@@ -40,11 +40,11 @@ export const MissionReportModal: React.FC = () => {
   if (!isReportModalOpen) return null;
 
   const handleDownloadCsv = () => {
-    window.open('/api/export/events.csv', '_blank');
+    window.open(api.getExportCsvUrl(), '_blank');
   };
 
   const handleDownloadJson = () => {
-    window.open('/api/export/report.json', '_blank');
+    window.open(api.getExportJsonUrl(), '_blank');
   };
 
   const handlePrint = () => {

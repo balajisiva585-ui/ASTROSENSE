@@ -22,6 +22,8 @@ import {
   Zap,
 } from 'lucide-react';
 
+import { DatabaseStatusCard } from '../components/database/DatabaseStatusCard';
+
 export const MissionMonitorPage: React.FC = () => {
   const {
     session,
@@ -145,6 +147,9 @@ export const MissionMonitorPage: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Hybrid Database HUD Status Card */}
+      <DatabaseStatusCard />
 
       {/* ========================================================================= */}
       {/* 2. MAIN SPLIT: LIVE VIDEO MONITOR (TOP/LEFT) + TELEMETRY & ROBOTS         */}

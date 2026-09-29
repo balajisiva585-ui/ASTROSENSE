@@ -1,16 +1,4 @@
-# ==============================================================================
-# ASTROSENSE — Render Blueprint Infrastructure as Code (render.yaml)
-# ==============================================================================
-# Full-Stack Deployment:
-# 1. astrosense-server: Node.js Express API Web Service (Edge Node & Sync Engine)
-# 2. astrosense-client: React + Vite Static Site (Webcam HAR + Space UI HUD)
-# 3. astrosense-db: Managed PostgreSQL Ground Database
-# ==============================================================================
-
 services:
-  # ----------------------------------------------------------------------------
-  # 1. Backend Web Service (Node.js + Express + TypeScript)
-  # ----------------------------------------------------------------------------
   - type: web
     name: astrosense-server
     runtime: node
@@ -38,20 +26,16 @@ services:
           property: connectionString
       - key: FRONTEND_URL
         fromService:
-          type: static
+          type: web
           name: astrosense-client
           property: url
 
-  # ----------------------------------------------------------------------------
-  # 2. Frontend Static Site (React + Vite + Tailwind + OpenCV.js + MediaPipe)
-  # ----------------------------------------------------------------------------
-  - type: static
+  - type: web
     name: astrosense-client
-    plan: free
-    region: oregon
+    runtime: static
     rootDir: client
     buildCommand: npm install && npm run build
-    publishDir: dist
+    staticPublishPath: dist
     autoDeploy: true
     routes:
       - type: rewrite
@@ -65,12 +49,8 @@ services:
           property: url
 
 databases:
-  # ----------------------------------------------------------------------------
-  # 3. Ground Database (PostgreSQL)
-  # ----------------------------------------------------------------------------
   - name: astrosense-db
     plan: free
     region: oregon
     databaseName: astrosense
     user: astrosense_user
-    ipAllowList: [] # Allows all Render internal and external connections
